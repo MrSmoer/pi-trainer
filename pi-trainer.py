@@ -1,6 +1,9 @@
+from calendar import c
 import curses
 from curses import wrapper
 from curses.ascii import isdigit
+import fileinput
+from operator import truediv
 import time
 
 lines = []
@@ -103,16 +106,84 @@ class KeypadManager:
 
     def setKeyWrong(self,key):
         self.changeColorOfKey(key,self.wrongColor)
+
     def setKeyOff(self,key):
         self.changeColorOfKey(key,self.offColor)
 
+class DoneException(Exception): pass
 class Display:
     def __init__(self,lines):
-        self.display=curses.newwin(1,1,1,1)
+        self.display=curses.newwin(4,240,1,1)
         self.lines=lines
+        self.currentDigit=lines[0][0]
+        self.digitOfLine=0
+        self.cL=0
+        self.rightColor, self.offColor, self.wrongColor = initColors()
+        self.leftDisplay=15
 
-    def shiftLeft():
-        print("",end="")
+    def shiftLeft(self):
+        
+
+        if Display.isLongerThanLine(self.digitOfLine, self.lines[self.cL]):
+            self.cL+=1
+            self.digitOfLine=0
+            if self.cL == len(self.lines):
+                raise DoneException
+        else:
+            self.digitOfLine += 1
+
+        self.show()
+        
+
+    def show(self):
+        left=self.assembleLeft()
+        right=self.assembleRight()
+        self.display.addstr(1,16,right,self.offColor)
+        self.display.refresh()
+
+    
+    @staticmethod
+    def isLongerThanLine(index,line):
+        if index >= len(line)-1:
+            return True
+        else:
+            return False
+    
+    def assembleRight(self):
+        currentline=lines[self.cL][self.digitOfLine:]
+        nextline=''
+        if len(lines)>self.cL+1:
+            nextline=lines[self.cL+1][0:self.digitOfLine]
+        right=currentline+nextline
+        return right
+    
+    def assembleLeft(self):
+        ## OLDLINE
+        oldline=''
+        if self.leftDisplay > self.digitOfLine and not self.isFirstLine():
+            spaceForOld=self.leftDisplay - self.digitOfLine
+            oldline=lines[self.cL-1][-spaceForOld:]
+        
+        ## CURRENT LINE
+        currentline=lines[self.cL][:self.digitOfLine]
+        if self.leftDisplay < len(currentline):
+            charsToChop = len(currentline)-self.leftDisplay
+            currentline = currentline[charsToChop:]
+        left=oldline+currentline
+
+        ## START FROM MIDDLE
+        xstart=1
+        if self.isFirstLine() and self.digitOfLine<self.leftDisplay:
+            xstart=self.leftDisplay+1-self.digitOfLine
+
+        self.display.addstr(1,xstart, left,self.rightColor)
+        #self.display.addstr(3,1, currentline+"                       ",self.rightColor)
+    
+    def getCurrentDigit(self):
+        currentDigit=lines[self.cL][self.digitOfLine]
+        return currentDigit
+    def isFirstLine(self):
+        return self.cL==0
 
 def main(stdscr):
     readPifileToLines('pi.txt')
@@ -121,35 +192,36 @@ def main(stdscr):
     initCursesSettings(stdscr)
     window = initMainWindow()
     keypad = KeypadManager()
-    display = Display()
+    display = Display(lines)
 
-    digitOfLine=0
-    currentDigit=lines[0][0]
-    cL=0
+    currentDigit=display.getCurrentDigit()
     correctDigits=0
     oldKey=""
-
-    while True:
-        
-        a = window.getkey()
-        keypad.setKeyOff(oldKey)
-        oldKey=a
-        if a.isdigit():
-            if a==currentDigit:
-                display.shiftLeft
-                digitOfLine+=1
-                
-                correctDigits+=1
-                currentDigit=lines[cL][digitOfLine]
-                keypad.setKeyRight(a)
-                
-            else:
-                print('\a', end="",flush=True)
-                keypad.setKeyWrong(a)
+    display.show()
+    try:
+        while True:
+            currentDigit=display.getCurrentDigit()
+            a = window.getkey()
             
-        elif a == 'q':
-            break
-    exit(stdscr)
+            keypad.setKeyOff(oldKey)
+            oldKey=a
+            if a.isdigit():
+                if a==currentDigit:
+                    display.shiftLeft()
+                    correctDigits+=1
+                    keypad.setKeyRight(a)  
+                else:
+                    print('\a', end="",flush=True)
+                    keypad.setKeyWrong(a)
+                
+            elif a == 'q':
+                break
+            
+        exit(stdscr)
+    except DoneException:
+        exit(stdscr)
+        print("You typed all digits of Pi that are provided in the Database ...")
+        print(" ")
 
 wrapper(main)
   
