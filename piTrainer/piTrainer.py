@@ -6,32 +6,40 @@ import fileinput
 from operator import truediv
 import time
 
-lines = []
 
-keyPattern='''╔═══╦═══╦═══╗
-║ 7 ║ 8 ║ 9 ║
-╠═══╬═══╬═══╣
-║ 4 ║ 5 ║ 6 ║
-╠═══╬═══╬═══╣
-║ 1 ║ 2 ║ 3 ║
-╠═══╩═══╬═══╝
-║  0    ║
-╚═══════╝'''
-keyCords=[(7,3),(5,2),(5,6),(5,10),(3,2),(3,6),(3,10),(1,2),(1,6),(1,10)]
+class PiFileReader:
+    def __init__(self) -> None:
+        pass
+
+    def has_numbers(self,inputString):
+        return any(char.isdigit() for char in inputString)
+
+    def readPifileToLines(self,filename):
+        pifile = open(filename)
+        lines=[]
+        
+        while True:
+            # Get next line from file
+            line = pifile.readline()
+        # if line is empty
+        # end of file is reached
+            if not line:
+                break
+            if self.has_numbers(line) and "-" not in line and " " in line:
+                cleanedLine = ''
+                for c in line:
+                    if c != ' ' and c.isdigit():
+                        cleanedLine = cleanedLine+c
+                #print("Line{}: {}".format(count, line.strip()))
+                lines.append(cleanedLine)
+        pifile.close()
+        return lines
+        
 def exit(stdscr):
     curses.nocbreak()
     stdscr.keypad(False)
     curses.echo()
     curses.endwin()
-
-
-
-def has_numbers(inputString):
-    return any(char.isdigit() for char in inputString)
-
-
-
-
 
 def initMainWindow():
     window = curses.newwin(curses.LINES-1, curses.COLS-1)
@@ -48,26 +56,6 @@ def initCursesSettings(stdscr):
     curses.curs_set(0)
     stdscr.keypad(True)
 
-@staticmethod
-def readPifileToLines(filename):
-    pifile = open(filename)
-    
-    while True:
-        # Get next line from file
-        line = pifile.readline()
-    # if line is empty
-    # end of file is reached
-        if not line:
-            break
-        if has_numbers(line) and "-" not in line and " " in line:
-            cleanedLine = ''
-            for c in line:
-                if c != ' ' and c.isdigit():
-                    cleanedLine = cleanedLine+c
-            #print("Line{}: {}".format(count, line.strip()))
-            lines.append(cleanedLine)
-    pifile.close()
-    return lines
 
 def initColors():
     if curses.has_colors:
@@ -86,20 +74,17 @@ def initColors():
 
 
 
-
 class KeypadManager:
-    
-    
     def __init__(self):
         self.keypad=curses.newwin(9,14,5,15)
-        self.keypad.addstr(keyPattern)
+        self.keypad.addstr(self.keyPattern)
         self.keypad.refresh()
         self.rightColor, self.offColor, self.wrongColor = initColors()
         #return self.keypad
 
     def changeColorOfKey(self,char,color):
         if char != '':
-            self.keypad.addch(keyCords[int(char)][0],keyCords[int(char)][1],char,color)
+            self.keypad.addch(self.keyCords[int(char)][0],self.keyCords[int(char)][1],char,color)
             self.keypad.refresh()
 
 
@@ -111,6 +96,17 @@ class KeypadManager:
 
     def setKeyOff(self,key):
         self.changeColorOfKey(key,self.offColor)
+
+    keyPattern='''╔═══╦═══╦═══╗
+║ 7 ║ 8 ║ 9 ║
+╠═══╬═══╬═══╣
+║ 4 ║ 5 ║ 6 ║
+╠═══╬═══╬═══╣
+║ 1 ║ 2 ║ 3 ║
+╠═══╩═══╬═══╝
+║  0    ║
+╚═══════╝'''
+    keyCords=[(7,3),(5,2),(5,6),(5,10),(3,2),(3,6),(3,10),(1,2),(1,6),(1,10)]
 
 class DoneException(Exception): pass
 class Display:
@@ -152,10 +148,10 @@ class Display:
             return False
     
     def assembleRight(self):
-        currentline=lines[self.cL][self.digitOfLine:]
+        currentline=self.lines[self.cL][self.digitOfLine:]
         nextline=''
-        if len(lines)>self.cL+1:
-            nextline=lines[self.cL+1][0:self.digitOfLine]
+        if len(self.lines)>self.cL+1:
+            nextline=self.lines[self.cL+1][0:self.digitOfLine]
         right=currentline+nextline
         return right
     
@@ -164,10 +160,10 @@ class Display:
         oldline=''
         if self.leftDisplay > self.digitOfLine and not self.isFirstLine():
             spaceForOld=self.leftDisplay - self.digitOfLine
-            oldline=lines[self.cL-1][-spaceForOld:]
+            oldline=self.lines[self.cL-1][-spaceForOld:]
         
         ## CURRENT LINE
-        currentline=lines[self.cL][:self.digitOfLine]
+        currentline=self.lines[self.cL][:self.digitOfLine]
         if self.leftDisplay < len(currentline):
             charsToChop = len(currentline)-self.leftDisplay
             currentline = currentline[charsToChop:]
@@ -183,19 +179,48 @@ class Display:
         return left
     
     def getCurrentDigit(self):
-        currentDigit=lines[self.cL][self.digitOfLine]
+        currentDigit=self.lines[self.cL][self.digitOfLine]
         return currentDigit
     def isFirstLine(self):
         return self.cL==0
 
+class ScoreBoard:
+    def __init__(self, y, x):
+        self.scWin= curses.newwin(3, 25, y, x)
+        self.correctDigits=0
+        self.mistakes=0
+        self.x=x
+        self.y=y
+        self.updateScreen()
+    
+    def incrementScore(self):
+        self.correctDigits+=1
+        self.updateScreen()
+    
+    def incrementMistakes(self):
+        self.mistakes+=1
+        self.updateScreen()
+    
+    def reset(self):
+        self.correctDigits=0
+        self.mistakes=0
+
+    def updateScreen(self):
+        self.scWin.addstr(0,1,"Digits: "+str(self.correctDigits))
+        self.scWin.addstr(2,1,"Mistakes: "+str(self.mistakes))
+        self.scWin.refresh()
+
+
 def main(stdscr):
-    readPifileToLines('pi.txt')
+    pireader=PiFileReader()
+    lines=pireader.readPifileToLines('pi.txt')
     
     rightColor, offColor, wrongColor = initColors()
     initCursesSettings(stdscr)
     window = initMainWindow()
     keypad = KeypadManager()
     display = Display(lines)
+    scBoard = ScoreBoard(10, 30)
 
     currentDigit=display.getCurrentDigit()
     correctDigits=0
@@ -213,9 +238,11 @@ def main(stdscr):
                     display.shiftLeft()
                     correctDigits+=1
                     keypad.setKeyRight(a)  
+                    scBoard.incrementScore()
                 else:
                     print('\a', end="",flush=True)
                     keypad.setKeyWrong(a)
+                    scBoard.incrementMistakes()
                 
             elif a == 'q':
                 break
