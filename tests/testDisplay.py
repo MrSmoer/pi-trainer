@@ -1,14 +1,15 @@
 import unittest
 import curses
 
-from piTrainer.piTrainer import Display, readPifileToLines
+from piTrainer.piTrainer import Display, PiFileReader
 
 
 class DisplayTestClass(unittest.TestCase):
     def test_left(self):
         scr=curses.initscr()
         curses.start_color()
-        lines=readPifileToLines("pi.txt")
+        piReader=PiFileReader()
+        lines=piReader.readPifileToLines("pi.txt")
         display=Display(lines)
         display.cL=0
         display.digitOfLine=26

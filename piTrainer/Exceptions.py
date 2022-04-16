@@ -1,0 +1,4 @@
+
+class DoneException(Exception): pass
+
+
