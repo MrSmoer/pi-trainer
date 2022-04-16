@@ -48,6 +48,7 @@ def initCursesSettings(stdscr):
     curses.curs_set(0)
     stdscr.keypad(True)
 
+@staticmethod
 def readPifileToLines(filename):
     pifile = open(filename)
     
@@ -66,6 +67,7 @@ def readPifileToLines(filename):
             #print("Line{}: {}".format(count, line.strip()))
             lines.append(cleanedLine)
     pifile.close()
+    return lines
 
 def initColors():
     if curses.has_colors:
@@ -178,6 +180,7 @@ class Display:
 
         self.display.addstr(1,xstart, left,self.rightColor)
         #self.display.addstr(3,1, currentline+"                       ",self.rightColor)
+        return left
     
     def getCurrentDigit(self):
         currentDigit=lines[self.cL][self.digitOfLine]
@@ -223,7 +226,8 @@ def main(stdscr):
         print("You typed all digits of Pi that are provided in the Database ...")
         print(" ")
 
-wrapper(main)
+if __name__== '__main__':
+    wrapper(main)
   
     
 
