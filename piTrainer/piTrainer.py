@@ -11,7 +11,8 @@ import ScoreBoard
 import Display
 import ColorManager
 import Exceptions
-import Standard
+import StandardMode
+import learnMode
 
         
 def exit(stdscr):
@@ -42,15 +43,20 @@ def main(stdscr):
     initCursesSettings(stdscr)
     window = initMainWindow()
     modes={
-        1:Standard.Standard()
+        1:(StandardMode.Standard(),"Standard"),
+        2:(learnMode.learnMode(),"Learning")
     }
+    yCordOfOpt=10
+    window.addstr(yCordOfOpt,3,"Select Your Mode")
+    for key in modes:
+        text= str(key)+') '+modes.get(key)[1]
+        yCordOfOpt +=1
+        window.addstr(yCordOfOpt,3,text)
     
-    window.addstr(10,3,"Select Your Mode")
-    window.addstr(11,3,"1) Standard")
 
     a = window.getkey()
     #print(a)q1
-    game=modes.get(int(a))
+    game=modes.get(int(a))[0]
     window.erase()
     window.refresh()
     game.start(window)

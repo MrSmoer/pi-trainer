@@ -23,10 +23,10 @@ class Display:
         else:
             self.digitOfLine += 1
 
-        self.show()
+        
         
 
-    def show(self):
+    def showStandard(self):
         left=self.assembleLeft()
         right=self.assembleRight()
         self.display.addstr(1,16,right,self.offColor)

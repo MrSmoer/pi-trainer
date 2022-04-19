@@ -1,13 +1,12 @@
-import time
-import PiFileReader
 import KeypadManager
+import PiFileReader
 import Display
 import ScoreBoard
 import Exceptions
 
-class Standard():
-    
-    def start(self,window):
+
+class learnMode:
+    def start(self, window):
         pireader=PiFileReader.PiFileReader()
         lines=pireader.readPifileToLines('pi.txt')
         keypad = KeypadManager.KeypadManager(window)
@@ -17,7 +16,7 @@ class Standard():
         currentDigit=display.getCurrentDigit()
         correctDigits=0
         oldKey=""
-        display.show()
+        self.showLeft(display)
         keypad.keypad.touchwin()
         try:
             while True:
@@ -29,13 +28,15 @@ class Standard():
                 if a.isdigit():
                     if a==currentDigit:
                         display.shiftLeft()
+                        self.showLeft(display)
                         correctDigits+=1
                         keypad.setKeyRight(a)  
                         scBoard.incrementScore()
                     else:
                         print('\a', end="",flush=True)
                         keypad.setKeyWrong(a)
-                        scBoard.incrementMistakes()
+                        raise Exceptions.GameOverException
+                        #scBoard.incrementMistakes()
                         
                 elif a == 'q':
                     break
@@ -46,3 +47,26 @@ class Standard():
         except Exceptions.DoneException:  
             print("You typed all digits of Pi that are provided in the Database ...")
             print(" ")
+        except Exceptions.GameOverException:
+            display.display.erase()
+            display.display.refresh()
+            keypad.keypad.erase()
+            keypad.keypad.refresh()
+            scBoard.scWin.erase()
+            scBoard.scWin.refresh()
+            startLine = 3
+            window.addstr(startLine+0,3,"GAME OVER, "+str(correctDigits)+" CORRECT DIGITS")
+            window.addstr(startLine+1,4,"DIGIT "+str(correctDigits+1)+" WOULD HAVE BEEN A "+str(currentDigit))
+            window.addstr(startLine+2,3,"PRESS r TO RETRY AND ANY OTHER KEY TO QUIT")
+            window.refresh()
+            a=window.getkey()
+            if a == 'r':
+                self.start(window)
+
+    
+    def showLeft(self,display):
+        left=display.assembleLeft()
+        #right=display.assembleRight()
+        #display.display.addstr(1,16,right,display.offColor)
+        display.display.refresh()
+        display.display.touchwin()
