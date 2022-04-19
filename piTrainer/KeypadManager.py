@@ -1,4 +1,5 @@
 import curses
+from curses.ascii import isdigit
 from Exceptions import DoneException
 import ColorManager
 
@@ -13,6 +14,8 @@ class KeypadManager:
         #return self.keypad
 
     def changeColorOfKey(self,char,color):
+        if not char.isdigit():
+            return
         if char != '':
             self.keypad.addch(self.keyCords[int(char)][0],self.keyCords[int(char)][1],char,color)
             self.keypad.refresh()

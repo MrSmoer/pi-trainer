@@ -39,6 +39,10 @@ class Standard():
                         
                 elif a == 'q':
                     break
+                elif a == 'r':
+                    window.erase()
+                    window.refresh()
+                    self.start(window)
         except Exceptions.DoneException:  
             print("You typed all digits of Pi that are provided in the Database ...")
             print(" ")
