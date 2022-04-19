@@ -1,3 +1,5 @@
+import curses
+import time
 import KeypadManager
 import PiFileReader
 import Display
@@ -7,17 +9,36 @@ import Exceptions
 
 class learnMode:
     def start(self, window):
+        default_digit=5
+        window.addstr(1,1,"Which digit is your first target?(default is "+str(default_digit)+")")
+        curses.echo(True)
+        curses.cbreak(False)
+        c=window.getstr().decode(encoding="utf-8")
+        curses.noecho()
+        curses.cbreak(True)
+        if c =='' or not c.isnumeric():
+            c=default_digit
+        target=c
         pireader=PiFileReader.PiFileReader()
         lines=pireader.readPifileToLines('pi.txt')
         keypad = KeypadManager.KeypadManager(window)
         display = Display.Display(lines)
         scBoard = ScoreBoard.ScoreBoard(10, 30)
-
         currentDigit=display.getCurrentDigit()
         correctDigits=0
         oldKey=""
         self.showLeft(display)
         keypad.keypad.touchwin()
+        for i in range(target):
+            keypad.setKeyOff(oldKey)
+            currentDigit=display.getCurrentDigit()
+            oldKey=currentDigit
+            display.shiftLeft()
+            self.showLeft(display)
+            correctDigits+=1
+            keypad.setKeyRight(currentDigit)
+            scBoard.incrementScore()
+            time.sleep(0.5)
         try:
             while True:
                 currentDigit=display.getCurrentDigit()
