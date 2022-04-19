@@ -11,6 +11,7 @@ import ScoreBoard
 import Display
 import ColorManager
 import Exceptions
+import Standard
 
         
 def exit(stdscr):
@@ -36,46 +37,25 @@ def initCursesSettings(stdscr):
 
 
 def main(stdscr):
-    pireader=PiFileReader.PiFileReader()
-    lines=pireader.readPifileToLines('pi.txt')
-    
+   
     rightColor, offColor, wrongColor =  ColorManager.initColors()
     initCursesSettings(stdscr)
     window = initMainWindow()
-    keypad = KeypadManager.KeypadManager()
-    display = Display.Display(lines)
-    scBoard = ScoreBoard.ScoreBoard(10, 30)
+    modes={
+        1:Standard.Standard()
+    }
+    
+    window.addstr(10,3,"Select Your Mode")
+    window.addstr(11,3,"1) Standard")
 
-    currentDigit=display.getCurrentDigit()
-    correctDigits=0
-    oldKey=""
-    display.show()
-    try:
-        while True:
-            currentDigit=display.getCurrentDigit()
-            a = window.getkey()
-            
-            keypad.setKeyOff(oldKey)
-            oldKey=a
-            if a.isdigit():
-                if a==currentDigit:
-                    display.shiftLeft()
-                    correctDigits+=1
-                    keypad.setKeyRight(a)  
-                    scBoard.incrementScore()
-                else:
-                    print('\a', end="",flush=True)
-                    keypad.setKeyWrong(a)
-                    scBoard.incrementMistakes()
-                
-            elif a == 'q':
-                break
-            
-        exit(stdscr)
-    except Exceptions.DoneException:
-        exit(stdscr)
-        print("You typed all digits of Pi that are provided in the Database ...")
-        print(" ")
+    a = window.getkey()
+    #print(a)q1
+    game=modes.get(int(a))
+    window.erase()
+    window.refresh()
+    game.start(window)
+    exit(stdscr)
+    
 
 if __name__== '__main__':
     wrapper(main)

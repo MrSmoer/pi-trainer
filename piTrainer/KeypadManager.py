@@ -4,9 +4,10 @@ import ColorManager
 
 
 class KeypadManager:
-    def __init__(self):
+    def __init__(self,window):
         self.keypad=curses.newwin(9,14,5,15)
         self.keypad.addstr(self.keyPattern)
+        
         self.keypad.refresh()
         self.rightColor, self.offColor, self.wrongColor = ColorManager.initColors()
         #return self.keypad

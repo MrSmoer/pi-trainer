@@ -31,6 +31,7 @@ class Display:
         right=self.assembleRight()
         self.display.addstr(1,16,right,self.offColor)
         self.display.refresh()
+        self.display.touchwin()
 
     
     @staticmethod
