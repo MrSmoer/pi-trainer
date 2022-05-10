@@ -13,6 +13,7 @@ import ColorManager
 import Exceptions
 import StandardMode
 import learnMode
+import simonSays
 
         
 def exit(stdscr):
@@ -44,7 +45,8 @@ def main(stdscr):
     window = initMainWindow()
     modes={
         1:(StandardMode.Standard(),"Standard"),
-        2:(learnMode.learnMode(),"Learning")
+        2:(learnMode.learnMode(),"Number Learning"),
+        3:(simonSays.simonSays(),"Simon Says")
     }
     yCordOfOpt=10
     window.addstr(yCordOfOpt,3,"Select Your Mode")

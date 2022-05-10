@@ -18,12 +18,13 @@ class learnMode:
         curses.cbreak(True)
         if c =='' or not c.isnumeric():
             c=default_digit
-        target=c
+        target=int(c)
         pireader=PiFileReader.PiFileReader()
         lines=pireader.readPifileToLines('pi.txt')
         keypad = KeypadManager.KeypadManager(window)
         display = Display.Display(lines)
         scBoard = ScoreBoard.ScoreBoard(10, 30)
+        scBoard.showGoal()
         currentDigit=display.getCurrentDigit()
         correctDigits=0
         oldKey=""
@@ -62,9 +63,7 @@ class learnMode:
                 elif a == 'q':
                     break
                 elif a == 'r':
-                    window.erase()
-                    window.refresh()
-                    self.start(window)
+                    self.retry(window)
         except Exceptions.DoneException:  
             print("You typed all digits of Pi that are provided in the Database ...")
             print(" ")
@@ -82,7 +81,8 @@ class learnMode:
             window.refresh()
             a=window.getkey()
             if a == 'r':
-                self.start(window)
+                self.retry(window)
+                
 
     
     def showLeft(self,display):
@@ -91,3 +91,8 @@ class learnMode:
         #display.display.addstr(1,16,right,display.offColor)
         display.display.refresh()
         display.display.touchwin()
+    
+    def retry(self,window):
+        window.erase()
+        window.refresh()
+        self.start(window)
