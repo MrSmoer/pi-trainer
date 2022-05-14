@@ -21,6 +21,7 @@ def exit(stdscr):
     stdscr.keypad(False)
     curses.echo()
     curses.endwin()
+    
 
 def initMainWindow():
     window = curses.newwin(curses.LINES-1, curses.COLS-1)
@@ -48,16 +49,22 @@ def main(stdscr):
         2:(learnMode.learnMode(),"Number Learning"),
         3:(simonSays.simonSays(),"Simon Says")
     }
-    yCordOfOpt=10
+    yCordOfOpt=4
     window.addstr(yCordOfOpt,3,"Select Your Mode")
     for key in modes:
         text= str(key)+') '+modes.get(key)[1]
         yCordOfOpt +=1
         window.addstr(yCordOfOpt,3,text)
     
-
-    a = window.getkey()
-    #print(a)q1
+    a=''
+    while not a.isdigit():
+        a = window.getkey()
+        if a=='q':
+            break
+    
+    if not a.isdigit():
+        exit(stdscr)
+        return
     game=modes.get(int(a))[0]
     window.erase()
     window.refresh()

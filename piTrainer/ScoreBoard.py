@@ -37,8 +37,8 @@ class ScoreBoard:
         self.goal += 1
         self.updateScreen()
 
-    def showGoal(self):
-        self.goalVisible=True
+    def showGoal(self,visble):
+        self.goalVisible=visble
         self.updateScreen()
 
     def hideGoal(self):

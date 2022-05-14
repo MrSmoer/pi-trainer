@@ -8,8 +8,8 @@ import Exceptions
 class Standard():
     
     def start(self,window):
-        pireader=PiFileReader.PiFileReader()
-        lines=pireader.readPifileToLines('pi.txt')
+        pireader=PiFileReader.PiFileReader('pi.txt')
+        lines=pireader.lines
         keypad = KeypadManager.KeypadManager(window)
         display = Display.Display(lines)
         scBoard = ScoreBoard.ScoreBoard(10, 30)

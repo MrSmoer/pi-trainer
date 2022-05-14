@@ -19,8 +19,8 @@ class learnMode:
         if c =='' or not c.isnumeric():
             c=default_digit
         target=int(c)
-        pireader=PiFileReader.PiFileReader()
-        lines=pireader.readPifileToLines('pi.txt')
+        pireader=PiFileReader.PiFileReader('pi.txt')
+        lines=pireader.lines
         keypad = KeypadManager.KeypadManager(window)
         display = Display.Display(lines)
         scBoard = ScoreBoard.ScoreBoard(10, 30)

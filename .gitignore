@@ -1,5 +1,6 @@
 piTrainer/__pycache__/
 tests/__pycache__/
+*.pyc
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -163,3 +164,4 @@ cython_debug/
 #.idea/
 
 .vscode/
+tests/__pycache__/testDisplay.cpython-310.pyc

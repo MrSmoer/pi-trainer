@@ -1,13 +1,7 @@
 class PiFileReader:
-    def __init__(self) -> None:
-        pass
-
-    def has_numbers(self,inputString):
-        return any(char.isdigit() for char in inputString)
-
-    def readPifileToLines(self,filename):
+    def __init__(self, filename) -> None:
         with open(filename) as pifile:
-            lines=[]
+            self.lines=[]
             
             while True:
                 # Get next line from file
@@ -22,6 +16,22 @@ class PiFileReader:
                         if c != ' ' and c.isdigit():
                             cleanedLine = cleanedLine+c
                     #print("Line{}: {}".format(count, line.strip()))
-                    lines.append(cleanedLine)
+                    self.lines.append(cleanedLine)
 
-        return lines
+        #return self.lines
+
+    def has_numbers(self,inputString):
+        return any(char.isdigit() for char in inputString)
+
+    def getDigit(self, n):
+        linelength=len(self.lines[0])
+        lineNum=self.getLineOfDigit(n)
+        return self.lines[lineNum][self.getDigitOfLine(n)]
+
+    def getLineOfDigit(self, n):
+        linelength=len(self.lines[0])
+        lineNum=int(n/linelength)
+        return lineNum
+    def getDigitOfLine(self, n):
+        linelength=len(self.lines[0])
+        return n%linelength
