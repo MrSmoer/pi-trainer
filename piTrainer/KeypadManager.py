@@ -29,6 +29,9 @@ class KeypadManager:
 
     def setKeyOff(self,key):
         self.changeColorOfKey(key,self.offColor)
+    def clear(self):
+        for i in range(10):
+            self.setKeyOff(str(i))
 
     keyPattern='''╔═══╦═══╦═══╗
 ║ 7 ║ 8 ║ 9 ║

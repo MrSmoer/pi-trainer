@@ -24,7 +24,7 @@ class learnMode:
         keypad = KeypadManager.KeypadManager(window)
         display = Display.Display(lines)
         scBoard = ScoreBoard.ScoreBoard(10, 30)
-        scBoard.showGoal()
+        scBoard.showGoal(False)
         currentDigit=display.getCurrentDigit()
         correctDigits=0
         oldKey=""

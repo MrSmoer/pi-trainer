@@ -13,6 +13,7 @@ class Display:
         self.cL=0
         self.rightColor, self.offColor, self.wrongColor = ColorManager.initColors()
         self.leftDisplay=15
+        self.rightEnabled=True
 
     def shiftLeft(self):
         
@@ -31,7 +32,7 @@ class Display:
     def showStandard(self):
         left=self.assembleLeft()
         right=self.assembleRight()
-        self.display.addstr(1,self.leftDisplay+1,right,self.offColor)
+        
         self.display.refresh()
         self.display.touchwin()
 
@@ -44,11 +45,15 @@ class Display:
             return False
     
     def assembleRight(self):
-        currentline=self.lines[self.cL][self.digitOfLine:]
-        nextline=''
-        if len(self.lines)>self.cL+1:
-            nextline=self.lines[self.cL+1][0:self.digitOfLine]
-        right=currentline+nextline
+        right=''
+        if self.rightEnabled:
+            currentline=self.lines[self.cL][self.digitOfLine:]
+            nextline=''
+            if len(self.lines)>self.cL+1:
+                nextline=self.lines[self.cL+1][0:self.digitOfLine]
+            right=currentline+nextline
+            
+            self.display.addstr(1,self.leftDisplay+1,right,self.offColor)
         return right
     
     def assembleLeft(self):
@@ -67,13 +72,16 @@ class Display:
 
         ## START FROM MIDDLE
         #xstart=1
+        spacepad=''
         if self.isFirstLine() and self.digitOfLine<self.leftDisplay:
+            
         #    xstart=self.leftDisplay+1-self.digitOfLine
             spaceCount=self.leftDisplay-self.digitOfLine
             for i in range(spaceCount):
-                left=' '+left
+                spacepad=' '+spacepad
+            self.display.addstr(1,1, spacepad,self.offColor)
             
-        self.display.addstr(1,1, left,self.rightColor)
+        self.display.addstr(1,len(spacepad)+1, left,self.rightColor)
         #self.display.addstr(3,1, currentline+"                       ",self.rightColor)
         return left
     
@@ -87,6 +95,7 @@ class Display:
         oldKey=''
         oldN=self.cL*len(self.lines[0])+self.digitOfLine
         self.setScreenToN(n)
+        currentDigit=0
         for i in range(m-n):
             keypad.setKeyOff(oldKey)
             currentDigit=self.getCurrentDigit()
@@ -96,9 +105,10 @@ class Display:
             #correctDigits+=1
             keypad.setKeyRight(currentDigit)
             scBoard.incrementScore()
-            time.sleep(0.5)
+            time.sleep(0.1)
         scBoard.score=n
         self.setScreenToN(oldN)
+        keypad.setKeyOff(currentDigit)
 
     def setScreenToN(self,n):
         piFile=PiFileReader.PiFileReader('pi.txt')

@@ -28,7 +28,7 @@ class ScoreBoard:
     def updateScreen(self):
         goalText=""
         if(self.goalVisible):
-            goalText="/"+str(self.goal)
+            goalText="/"+str(self.goal)+'       '
         self.scWin.addstr(0,1,"Digits: "+str(self.correctDigits)+goalText)
         self.scWin.addstr(2,1,"Mistakes: "+str(self.mistakes))
         self.scWin.refresh()
