@@ -6,7 +6,7 @@ import PiFileReader
 
 class Display:
     def __init__(self,lines):
-        self.display=curses.newwin(4,240,1,1)
+        self.display=curses.newwin(4,curses.COLS-1,1,1)
         self.lines=lines
         self.currentDigit=lines[0][0]
         self.digitOfLine=0
