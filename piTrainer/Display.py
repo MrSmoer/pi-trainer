@@ -105,7 +105,7 @@ class Display:
             #correctDigits+=1
             keypad.setKeyRight(currentDigit)
             scBoard.incrementScore()
-            time.sleep(0.1)
+            time.sleep(0.25)
         scBoard.score=n
         self.setScreenToN(oldN)
         keypad.setKeyOff(currentDigit)
