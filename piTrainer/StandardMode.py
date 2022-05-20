@@ -1,4 +1,3 @@
-import time
 import PiFileReader
 import KeypadManager
 import Display

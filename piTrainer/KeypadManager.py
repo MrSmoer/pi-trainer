@@ -1,6 +1,4 @@
 import curses
-from curses.ascii import isdigit
-from Exceptions import DoneException
 import ColorManager
 
 

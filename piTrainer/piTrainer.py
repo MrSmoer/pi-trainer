@@ -1,16 +1,6 @@
-from calendar import c
 import curses
 from curses import wrapper
-from curses.ascii import isdigit
-import fileinput
-from operator import truediv
-import time
-import PiFileReader
-import KeypadManager
-import ScoreBoard
-import Display
 import ColorManager
-import Exceptions
 import StandardMode
 import learnMode
 import simonSays
@@ -50,7 +40,7 @@ def main(stdscr):
         3:(simonSays.simonSays(),"Simon Says")
     }
     yCordOfOpt=4
-    window.addstr(yCordOfOpt,3,"Select Your Mode")
+    window.addstr(yCordOfOpt,3,"Select Mode")
     for key in modes:
         text= str(key)+') '+modes.get(key)[1]
         yCordOfOpt +=1
