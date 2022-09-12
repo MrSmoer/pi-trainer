@@ -8,7 +8,7 @@ import Exceptions
 
 
 class learnMode:
-    def start(self, window):
+    def start(self, window, fileToLearn):
         default_digit=5
         window.addstr(1,1,"Which digit is your first target?(default is "+str(default_digit)+")")
         curses.echo(True)
@@ -19,7 +19,7 @@ class learnMode:
         if c =='' or not c.isnumeric():
             c=default_digit
         target=int(c)
-        pireader=PiFileReader.PiFileReader('pi.txt')
+        pireader=PiFileReader.PiFileReader(fileToLearn)
         lines=pireader.lines
         keypad = KeypadManager.KeypadManager(window)
         display = Display.Display(lines)
@@ -63,7 +63,7 @@ class learnMode:
                 elif a == 'q':
                     break
                 elif a == 'r':
-                    self.retry(window)
+                    self.retry(window,fileToLearn)
         except Exceptions.DoneException:  
             print("You typed all digits of Pi that are provided in the Database ...")
             print(" ")
@@ -81,7 +81,7 @@ class learnMode:
             window.refresh()
             a=window.getkey()
             if a == 'r':
-                self.retry(window)
+                self.retry(window,fileToLearn)
                 
 
     
@@ -92,7 +92,7 @@ class learnMode:
         display.display.refresh()
         display.display.touchwin()
     
-    def retry(self,window):
+    def retry(self,window,fileToLearn):
         window.erase()
         window.refresh()
-        self.start(window)
+        self.start(window,fileToLearn)

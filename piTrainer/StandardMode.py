@@ -6,8 +6,8 @@ import Exceptions
 
 class Standard():
     
-    def start(self,window):
-        pireader=PiFileReader.PiFileReader('pi.txt')
+    def start(self,window,fileToLearn):
+        pireader=PiFileReader.PiFileReader(fileToLearn)
         lines=pireader.lines
         keypad = KeypadManager.KeypadManager(window)
         display = Display.Display(lines)
@@ -43,7 +43,7 @@ class Standard():
                 elif a == 'r':
                     window.erase()
                     window.refresh()
-                    self.start(window)
+                    self.start(window,fileToLearn)
         except Exceptions.DoneException:  
             print("You typed all digits of Pi that are provided in the Database ...")
             print(" ")

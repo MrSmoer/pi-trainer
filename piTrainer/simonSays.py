@@ -12,8 +12,8 @@ class simonSays():
         self.keypad.clear()
         self.display.animateFromNtoM(0,self.scBoard.goal,self.keypad, self.scBoard)
 
-    def start(self,window):
-        pireader=PiFileReader.PiFileReader('pi.txt')
+    def start(self,window,fileToLearn):
+        pireader=PiFileReader.PiFileReader(fileToLearn)
         lines=pireader.lines
         self.keypad = KeypadManager.KeypadManager(window)
         self.display = Display.Display(lines)
@@ -41,7 +41,7 @@ class simonSays():
                 if returnValue == 'r':
                     window.erase()
                     window.refresh()
-                    self.start(window)
+                    self.start(window,fileToLearn)
                     
                 self.scBoard.goal += 1
                 self.scBoard.correctDigits=0
