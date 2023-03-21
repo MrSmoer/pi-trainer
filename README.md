@@ -14,6 +14,7 @@ I recommend the PC-Numpad (not yet on appstores, build yourself) extension for A
 ## Manual
 - `q` quits
 - `r` retry
+- `+` or `-` (Senso only) changes the number of additional digits each round 
 ### Modes
 - Standard - just type through the digits, mistakes count, but don't block
 - Number Learning - type through digits blindly, beginning at certain digit, mistakes reset
