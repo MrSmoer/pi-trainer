@@ -65,7 +65,7 @@ class learnMode:
                 elif a == 'r':
                     self.retry(window,fileToLearn)
         except Exceptions.DoneException:  
-            print("You typed all digits of Pi that are provided in the Database ...")
+            print("You typed all digits that are provided in "+fileToLearn+" ...")
             print(" ")
         except Exceptions.GameOverException:
             display.display.erase()

@@ -45,5 +45,5 @@ class Standard():
                     window.refresh()
                     self.start(window,fileToLearn)
         except Exceptions.DoneException:  
-            print("You typed all digits of Pi that are provided in the Database ...")
+            print("You typed all digits that are provided in "+fileToLearn+" ...")
             print(" ")

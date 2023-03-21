@@ -3,7 +3,7 @@ from curses import wrapper
 import ColorManager
 import StandardMode
 import learnMode
-import simonSays
+import senso
 import numberToLearn
 
         
@@ -41,8 +41,8 @@ def main(stdscr):
         modes={
             1:(StandardMode.Standard(),"Standard"),
             2:(learnMode.learnMode(),"Number Learning"),
-            3:(simonSays.simonSays(),"Simon Says"),
-            4:(numberToLearn.numberToLearn(),"Set number to Learn")
+            3:(senso.senso(),"Senso"),
+            4:(numberToLearn.numberToLearn(),"Select number")
         }
         yCordOfOpt=4
         window.addstr(yCordOfOpt,3,"Select Mode")

@@ -4,7 +4,7 @@ import Display
 import ScoreBoard
 import Exceptions
 
-class simonSays():
+class senso():
     def __init__(self) -> None:
         pass
         
@@ -13,6 +13,7 @@ class simonSays():
         self.display.animateFromNtoM(0,self.scBoard.goal,self.keypad, self.scBoard)
 
     def start(self,window,fileToLearn):
+        increments=1
         pireader=PiFileReader.PiFileReader(fileToLearn)
         lines=pireader.lines
         self.keypad = KeypadManager.KeypadManager(window)
@@ -20,6 +21,7 @@ class simonSays():
         self.display.rightEnabled=False
         self.scBoard = ScoreBoard.ScoreBoard(10, 30)
         self.scBoard.showGoal(True)
+        self.scBoard.showIncrements(True)
 
         currentDigit=self.display.getCurrentDigit()
         oldKey=""
@@ -27,14 +29,19 @@ class simonSays():
         self.keypad.keypad.touchwin()
         self.scBoard.goal=1
         self.scBoard.correctDigits=0
+        skipstuff=False
         try:
             while True:
-                self.animateTilGoal()
-                self.scBoard.correctDigits=0
-
+                if not skipstuff:
+                    self.animateTilGoal()
+                    self.scBoard.correctDigits=0
+                    self.scBoard.updateScreen()
+                    self.display.showStandard()
+                    self.currentDigit=0
+                    #skipstuff=False
+                else:
+                    skipstuff=False
                 self.scBoard.updateScreen()
-                self.display.showStandard()
-                self.currentDigit=0
                 returnValue=self.handleInput(window, oldKey)
                 if returnValue == 'q':
                     break
@@ -42,40 +49,51 @@ class simonSays():
                     window.erase()
                     window.refresh()
                     self.start(window,fileToLearn)
+                if returnValue == '+':
+                    increments += 1
+                    self.scBoard.incrementSize=increments
+                    skipstuff=True
+                    continue
+                if returnValue == '-':
+                    if increments > 1:
+                        increments += -1
+                        self.scBoard.incrementSize=increments
+                    skipstuff=True
+                    continue
+                        
                     
-                self.scBoard.goal += 1
+                self.scBoard.goal += increments
                 self.scBoard.correctDigits=0
                 self.scBoard.updateScreen()
                 self.display.setScreenToN(0)
 
         except Exceptions.DoneException:  
-            print("You typed all digits of Pi that are provided in the Database ...")
+            print("You typed all digits of the number that are provided in the Database ...")
             print(" ")
 
     def handleInput(self, window, oldKey):
         while self.scBoard.correctDigits < self.scBoard.goal:
             self.currentDigit=self.display.getCurrentDigit()
-            a = window.getkey()
+            keypressed = window.getkey()
 
                         
             self.keypad.setKeyOff(oldKey)
-            oldKey=a
-            if a.isdigit():
-                if a==self.currentDigit:
+            oldKey=keypressed
+            controlKeys={'q','r','+','-'}
+            if keypressed.isdigit():
+                if keypressed==self.currentDigit:
                     self.display.shiftLeft()
                     self.display.showStandard()
-                    self.keypad.setKeyRight(a)  
+                    self.keypad.setKeyRight(keypressed)  
                     self.scBoard.incrementScore()
                 else:
                     print('\a', end="",flush=True)
-                    self.keypad.setKeyWrong(a)
+                    self.keypad.setKeyWrong(keypressed)
                             
                     self.scBoard.incrementMistakes()
                             
-            elif a == 'q':
-                return 'q'
-            elif a == 'r': 
-                return 'r'
+            elif keypressed in controlKeys:
+                return keypressed
                 
 
     
