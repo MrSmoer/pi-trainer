@@ -9,7 +9,7 @@ pip3 install windows-curses
 ```
 ### Android
 This can also run within Termux, preferably installed through F-Droid
-I recommend the PC-Numpad (not yet on appstores, build yourself) extension for AnySoftKeyboard, to build up that muscle memory.
+I recommend the PC-Numpad (not yet on appstores, build it yourself or [download it here](addons-languages-numpad-apk-1.apk)) extension for AnySoftKeyboard, to build up that muscle memory.
 
 ## Manual
 - `q` quits
