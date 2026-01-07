@@ -9,7 +9,7 @@ pip3 install windows-curses
 ```
 ### Android
 This can also run within Termux, preferably installed through F-Droid
-I recommend the PC-Numpad (not yet on appstores, build it yourself or [download it here](addons-languages-numpad-apk-1.apk)) extension for AnySoftKeyboard, to build up that muscle memory.
+I recommend the PC-Numpad [download it here on playstore](https://play.google.com/store/apps/details?id=com.anysoftkeyboard.languagepack.numpad) or [on F-Droid](https://f-droid.org/en/packages/com.anysoftkeyboard.languagepack.numpad/)) extension for AnySoftKeyboard, to build up that muscle memory.
 
 ## Manual
 - `q` quits
@@ -20,3 +20,4 @@ I recommend the PC-Numpad (not yet on appstores, build it yourself or [download 
 - Number Learning - type through digits blindly, beginning at certain digit, mistakes reset
 - Senso - Like early senso game, each round one more. +/- change the increment size
 - Select number - select the number you want to learn. Currently supported: Pi, e, random, and custom, which is loaded from custom.txt
+
